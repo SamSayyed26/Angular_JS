@@ -1,0 +1,8 @@
+<h1>Hello, {{ title }}</h1>
+<div [ngSwitch]="role">
+  <div *ngSwitchCase="'User'">Welcome User!</div>
+  <div *ngSwitchCase="'Admin'"><app-rooms></app-rooms></div>
+  <div *ngSwitchDefault>Please Login or Create an Account</div>
+</div>
+
+<router-outlet></router-outlet>
