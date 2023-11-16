@@ -22,7 +22,7 @@
   Available Rooms
   {{ roomsAvailability.availableRooms }}
   Rooms List
-  {{ roomDetials | json }}
+  {{ roomDetails | json }}
 
   <table class="table">
     <tr>
@@ -41,7 +41,7 @@
     <tr
       [ngClass]="e ? 'even' : 'odd'"
       *ngFor="
-        let room of roomDetials | slice : 0 : 1;
+        let room of roomDetails | slice : 0 : 1;
         let e = even;
         let o = odd;
         let i = index

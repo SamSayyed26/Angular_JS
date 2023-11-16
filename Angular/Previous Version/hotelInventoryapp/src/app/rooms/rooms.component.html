@@ -1,4 +1,7 @@
 <!-- <p>Welcome to {{ hotelName }}</p> -->
+<h3>Post Room</h3>
+<p>{{ postJSONvalue | json }}</p>
+
 <app-header></app-header>
 <app-header></app-header>
 <app-header></app-header>
@@ -28,6 +31,14 @@
 <div>
   <button (click)="addRoom()">Add Room</button>
 </div>
+
+<div>
+  <button (click)="editMethod()">Edit Room</button>
+</div>
+
+<!-- <div>
+  <button (click)="deleteMethod()">Delete Room</button>
+</div> -->
 
 <div *ngIf="hideRooms">
   <div *ngIf="roomsAvailability?.availableRooms">

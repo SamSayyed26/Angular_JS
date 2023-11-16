@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RoomsAvailability, RoomDetials } from './rooms';
+import { RoomsAvailability, RoomDetails } from './rooms';
 
 @Component({
   selector: 'app-rooms',
@@ -21,7 +21,7 @@ export class RoomsComponent {
     availableRooms: 3,
   };
 
-  roomDetials: RoomDetials[] = [
+  roomDetails: RoomDetails[] = [
     {
       roomNumber: 1,
       roomType: 'Economy',

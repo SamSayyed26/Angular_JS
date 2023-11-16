@@ -14,3 +14,14 @@ export interface RoomDetails {
   checkOutTime: Date;
   rating: number;
 }
+
+// export class RoomsDTO {
+//   roomNumber?: number;
+//   roomType: string;
+//   amenities: string;
+//   price: number;
+//   photos: string;
+//   checkinTime: Date;
+//   checkoutTime: Date;
+//   rating: number;
+// }

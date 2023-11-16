@@ -5,8 +5,12 @@ import {
   ViewChild,
   ViewContainerRef,
   ElementRef,
+  Optional,
+  Inject,
 } from '@angular/core';
 import { RoomsComponent } from './rooms/rooms.component';
+import { LoggerService } from './logger.service';
+import { localStorageToken } from './localstorage.token';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +19,10 @@ import { RoomsComponent } from './rooms/rooms.component';
 })
 export class AppComponent implements AfterViewInit, OnInit {
   title = 'hotelInventory';
+  constructor(
+    @Optional() private loggerService: LoggerService,
+    @Inject(localStorageToken) private localStorage: Storage
+  ) {}
 
   @ViewChild('user', { read: ViewContainerRef }) vcr!: ViewContainerRef;
   ngAfterViewInit(): void {
@@ -24,7 +32,10 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   @ViewChild('name', { static: true }) name!: ElementRef;
   ngOnInit(): void {
-    this.name.nativeElement.innerText = 'InterStellar';
+    this.loggerService?.log('AppComponent.ngOnInit()');
+    // this.name.nativeElement.innerText = 'InterStellar';
+    console.log(this.name);
+    this.localStorage.setItem('name', 'Interstellar');
   }
 
   role = 'Admin';
