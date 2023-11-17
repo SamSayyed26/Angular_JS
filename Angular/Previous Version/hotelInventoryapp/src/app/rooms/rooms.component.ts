@@ -13,7 +13,7 @@ import { RoomsAvailability, RoomDetails } from './rooms';
 import { HeaderComponent } from '../header/header.component';
 import { RoomsService } from './services/rooms.service';
 import { HttpClient, HttpEventType, HttpHeaders } from '@angular/common/http';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, shareReplay, tap } from 'rxjs';
 
 @Component({
   selector: 'app-rooms',
@@ -34,24 +34,26 @@ export class RoomsComponent
   title = 'Room Detail Data';
   getJSONvalue: any;
   postJSONvalue: any;
-  private getRooms$!: Observable<RoomDetails[]>;
 
-  // getMethod() {
-  //   this.http
-  //     .get<RoomDetails[]>('https://jsonplaceholder.typicode.com/todos/1')
-  //     .subscribe((data) => {
-  //       console.log('API Data: ', data);
-  //       this.getJSONvalue = data;
-  //       // this.roomDetails = [...this.roomDetails, this.getJSONvalue];
-  //     });
-  // }
-
-  // if a data is needed to be posted or get multiple times, this allows to store data in cache so it doesnot make multiple requests. But this is not working.
+  getMethod() {
+    // const headers = new HttpHeaders({ token: '12345678910' });
+    this.http
+      .get<RoomDetails[]>('https://jsonplaceholder.typicode.com/todos/1'
+      // , {
+      //   headers: headers,
+      // }
+      )
+      .subscribe((data) => {
+        console.log('API Data: ', data);
+        this.getJSONvalue = data;
+        // this.roomDetails = [...this.roomDetails, this.getJSONvalue];
+      });
+  }
 
   postMethod() {
-    const headers = new HttpHeaders({
-      contentType: 'application/json',
-    });
+    // const headers = new HttpHeaders({
+    //   contentType: 'application/json',
+    // });
     let body = {
       roomNumber: 4,
       roomType: 'VIP',
@@ -63,9 +65,11 @@ export class RoomsComponent
       rating: 4.9231,
     };
     this.http
-      .post('https://jsonplaceholder.typicode.com/posts', body, {
-        headers: headers,
-      })
+      .post('https://jsonplaceholder.typicode.com/posts', body
+      // ,{
+      //   headers: headers,
+      // }
+      )
       .subscribe((data) => {
         console.log('POST DATA: ', data);
         this.postJSONvalue = data;
@@ -122,10 +126,7 @@ export class RoomsComponent
     @SkipSelf() private roomsService: RoomsService,
     private http: HttpClient
   ) {
-    // this.getRooms$.subscribe((rooms) => {
-    //   this.roomDetails = rooms;
-    // }); // this is in correspondence of sending a request once instead of multiple times
-    // this.getMethod();
+    this.getMethod();
     this.postMethod();
     // this.editMethod();
   }
@@ -170,13 +171,6 @@ export class RoomsComponent
 
   totalBytes = 0;
   ngOnInit(): void {
-    this.getRooms$ = this.http
-      .get<RoomDetails[]>('https://jsonplaceholder.typicode.com/todos/1')
-      .pipe(shareReplay(1));
-
-    this.getRooms$.subscribe((rooms) => {
-      this.roomDetails = rooms;
-    });
     // this.stream.subscribe((data) => console.log("Stream Data:", data));
     this.stream.subscribe({
       next: (value) => console.log(value),

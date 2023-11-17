@@ -1,4 +1,4 @@
-<h1>Hello, {{ title }}</h1>
+<!-- <h1>Hello, {{ title }}</h1> -->
 <!-- <div [ngSwitch]="role">
   <div *ngSwitchCase="'User'">Welcome User!</div>
   <div *ngSwitchCase="'Admin'"><app-rooms></app-rooms></div>
@@ -12,14 +12,14 @@
 <!-- #user is a template reference. You can access user tag in any TS-file using ViewChild -->
 <!-- </div> -->
 
-<app-rooms></app-rooms>
-
-<app-container>
+<!-- <app-container> -->
   <!-- This will load in the sequence of ng-content  -->
-  <app-rooms></app-rooms>
+  <!-- <app-rooms></app-rooms>
   <app-employee></app-employee>
-  <h1>This is from ng-content</h1>
+  <h1>This is from ng-content</h1> -->
   <!-- this works because we have placed ng-content tag in the container-html -->
-</app-container>
-
+<!-- </app-container> -->
+<!-- <a [routerLink]="'rooms'">Rooms</a>
+<a [routerLink]="'employee'">Employees</a> -->
+<app-nav></app-nav>
 <router-outlet></router-outlet>

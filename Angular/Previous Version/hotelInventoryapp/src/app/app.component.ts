@@ -11,6 +11,7 @@ import {
 import { RoomsComponent } from './rooms/rooms.component';
 import { LoggerService } from './logger.service';
 import { localStorageToken } from './localstorage.token';
+import { InitService } from './init.service';
 
 @Component({
   selector: 'app-root',
@@ -21,8 +22,11 @@ export class AppComponent implements AfterViewInit, OnInit {
   title = 'hotelInventory';
   constructor(
     @Optional() private loggerService: LoggerService,
-    @Inject(localStorageToken) private localStorage: Storage
-  ) {}
+    @Inject(localStorageToken) private localStorage: Storage,
+    private initService: InitService
+  ) {
+    console.log('INIT Service: ', initService.config);
+  }
 
   @ViewChild('user', { read: ViewContainerRef }) vcr!: ViewContainerRef;
   ngAfterViewInit(): void {

@@ -3,6 +3,7 @@ import { RoomDetails } from '../rooms';
 import { AppConfig } from '../../AppConfig/appconfig.interface';
 import { APP_SERVICE_CONFIG } from '../../AppConfig/appconfig.service';
 import { HttpClient, HttpRequest } from '@angular/common/http';
+import { shareReplay } from 'rxjs';
 
 // if providedIn propert is not provided or removed, the nullInjector will be called
 @Injectable({
