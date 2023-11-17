@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { RoomDetails } from '../rooms';
 import { AppConfig } from '../../AppConfig/appconfig.interface';
 import { APP_SERVICE_CONFIG } from '../../AppConfig/appconfig.service';
+import { HttpClient, HttpRequest } from '@angular/common/http';
 
 // if providedIn propert is not provided or removed, the nullInjector will be called
 @Injectable({
@@ -41,11 +42,23 @@ export class RoomsService {
     },
   ];
 
-  constructor(@Inject(APP_SERVICE_CONFIG) private config: AppConfig) {
+  constructor(
+    @Inject(APP_SERVICE_CONFIG) private config: AppConfig,
+    private http: HttpClient
+  ) {
     console.log('API: ', this.config.apiEndpont);
     console.log('Rooms Service Initiallized');
   }
   getRooms() {
     return this.roomDetails;
+  }
+
+  getPhotos() {
+    const request = new HttpRequest(
+      'GET',
+      'https://jsonplaceholder.typicode.com/photos',
+      { reportProgress: true }
+    );
+    return this.http.request(request);
   }
 }

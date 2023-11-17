@@ -12,9 +12,8 @@ import {
 import { RoomsAvailability, RoomDetails } from './rooms';
 import { HeaderComponent } from '../header/header.component';
 import { RoomsService } from './services/rooms.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { error } from 'console';
+import { HttpClient, HttpEventType, HttpHeaders } from '@angular/common/http';
+import { Observable, shareReplay } from 'rxjs';
 
 @Component({
   selector: 'app-rooms',
@@ -25,25 +24,30 @@ export class RoomsComponent
   implements OnInit, DoCheck, AfterViewInit, AfterViewChecked
 {
   // Donot apply ngOnChanges and ngDoCheck together. It will capture values twice
-  @ViewChild(HeaderComponent)
+
+  @ViewChild(HeaderComponent) headerComponent!: HeaderComponent;
   // @ViewChild(HeaderComponent, { static: true }) Donot use static:true when using async code
-  headerComponent!: HeaderComponent;
+
   hotelName = 'Pearl Continental';
   stars = 5;
-  hideRooms = false;
+  hideRooms = true;
   title = 'Room Detail Data';
   getJSONvalue: any;
   postJSONvalue: any;
+  private getRooms$!: Observable<RoomDetails[]>;
 
-  getMethod() {
-    this.http
-      .get<RoomDetails[]>('https://jsonplaceholder.typicode.com/todos/1')
-      .subscribe((data) => {
-        console.log('API Data: ', data);
-        this.getJSONvalue = data;
-        // this.roomDetails = [...this.roomDetails, this.getJSONvalue];
-      });
-  }
+  // getMethod() {
+  //   this.http
+  //     .get<RoomDetails[]>('https://jsonplaceholder.typicode.com/todos/1')
+  //     .subscribe((data) => {
+  //       console.log('API Data: ', data);
+  //       this.getJSONvalue = data;
+  //       // this.roomDetails = [...this.roomDetails, this.getJSONvalue];
+  //     });
+  // }
+
+  // if a data is needed to be posted or get multiple times, this allows to store data in cache so it doesnot make multiple requests. But this is not working.
+
   postMethod() {
     const headers = new HttpHeaders({
       contentType: 'application/json',
@@ -97,22 +101,31 @@ export class RoomsComponent
         });
       });
   }
+  deleteMethod() {
+    this.http
+      .delete<RoomDetails[]>('https://jsonplaceholder.typicode.com/posts/1')
+      .subscribe(() => {
+        const url = 'https://jsonplaceholder.typicode.com/posts/1';
+        const segments = url.split('/');
+        const lastSegment = segments[segments.length - 1];
+        const index = this.roomDetails.findIndex(
+          (room) => room.roomNumber === Number(lastSegment)
+        );
+        if (index != -1) {
+          this.roomDetails.splice(index, 1);
+          console.log(`element at index ${index} deleted`);
+        }
+      });
+  }
 
-  // deleteMethod(){
-  //   this.http.delete<RoomDetails[]>('https://jsonplaceholder.typicode.com/posts/1').subscribe(room => {
-  //     this.roomDetails.map((room) => {
-  //       if (room.roomNumber === ) {
-          
-  //       }
-  //     });
-  //   })
-  // }
-  
   constructor(
     @SkipSelf() private roomsService: RoomsService,
     private http: HttpClient
   ) {
-    this.getMethod();
+    // this.getRooms$.subscribe((rooms) => {
+    //   this.roomDetails = rooms;
+    // }); // this is in correspondence of sending a request once instead of multiple times
+    // this.getMethod();
     this.postMethod();
     // this.editMethod();
   }
@@ -155,7 +168,15 @@ export class RoomsComponent
     this.headerComponent.title = 'Rooms View';
   }
 
+  totalBytes = 0;
   ngOnInit(): void {
+    this.getRooms$ = this.http
+      .get<RoomDetails[]>('https://jsonplaceholder.typicode.com/todos/1')
+      .pipe(shareReplay(1));
+
+    this.getRooms$.subscribe((rooms) => {
+      this.roomDetails = rooms;
+    });
     // this.stream.subscribe((data) => console.log("Stream Data:", data));
     this.stream.subscribe({
       next: (value) => console.log(value),
@@ -163,6 +184,27 @@ export class RoomsComponent
       error: (error) => console.log(error),
     });
     this.roomDetails = this.roomsService.getRooms();
+
+    this.roomsService.getPhotos().subscribe((event) => {
+      // console.log('Photos Data: ', event);
+      switch (event.type) {
+        case HttpEventType.Sent: {
+          console.log('Request has been made');
+          break;
+        }
+        case HttpEventType.ResponseHeader: {
+          console.log('Request success');
+          break;
+        }
+        case HttpEventType.DownloadProgress: {
+          this.totalBytes += event.loaded;
+          break;
+        }
+        case HttpEventType.Response: {
+          console.log(event.body);
+        }
+      }
+    });
   }
 
   selectRoom(room: RoomDetails) {
